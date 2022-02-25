@@ -4,7 +4,7 @@ This is a no-dependency helper function that recurses an object and drops its
 undefined values.
 
 ```javascript
-const clean = require("clean-object");
+const clean = require("clean-object-helper");
 
 const output = clean({
   foo: 1,
