@@ -6,16 +6,30 @@ const isUndefined = (xs) => xs === undefined;
 
 const isEmptyObject = (xs) => isObject(xs) && !Object.keys(xs).length;
 
+const isObjectId = (xs) => {
+  try {
+    return isObject(xs) && xs.constructor.name === "ObjectId";
+  } catch (e) {
+    return false;
+  }
+};
+
 const clean = (xs) => {
   if (isArray(xs)) return xs.map(clean);
-  if (isDate(xs) || isNull(xs) || !isObject(xs)) return xs;
+  if (isDate(xs) || isNull(xs) || isObjectId(xs) || !isObject(xs)) return xs;
 
   return Object.entries(xs).reduce((acc, [key, v]) => {
     if (!isUndefined(v)) {
       const out = clean(v);
 
       // will ensure no accidental "key: {}" situations
-      if (!isNull(out) && !isDate(out) && !isArray(out) && isEmptyObject(out))
+      if (
+        !isNull(out) &&
+        !isDate(out) &&
+        !isArray(out) &&
+        !isObjectId(out) &&
+        isEmptyObject(out)
+      )
         return acc;
 
       Object.assign(acc, {
